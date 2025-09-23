@@ -1,0 +1,10 @@
+name: Protector
+version: '1.0-SNAPSHOT'
+main: io.pproton96.protector.Protector
+api-version: '1.21'
+authors: [PProton96]
+description: Simple authentication plugin
+commands:
+  getpassword:
+    description: Console only command to get password.
+    usage: /getpassword
