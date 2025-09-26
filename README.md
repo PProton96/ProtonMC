@@ -1,0 +1,1 @@
+Minecraft Plugin i called "Protector", made this just to protect my non-license mc server from those idiots scanning for every IP and trying to finding non-license servers to join from admin's nickname and destroy ppl's world.
