@@ -2,6 +2,7 @@ package io.pproton96.protector.Listeners;
 
 import io.pproton96.protector.Protector;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,7 +50,7 @@ public class AsyncPlayerChatEvent implements Listener {
                         .findFirst()
                         .ifPresent(potion -> event.getPlayer().removePotionEffect(potion.getType()));
 
-                player.setAllowFlight(false);
+                if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) player.setAllowFlight(false);
             });
 
             return;
