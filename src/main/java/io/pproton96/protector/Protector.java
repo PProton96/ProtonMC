@@ -16,27 +16,35 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class Protector extends JavaPlugin {
 
-    public static Set<String> lockList = new HashSet<>();
+    private static Protector instance;
+
+    public static Set<String> lockList = ConcurrentHashMap.newKeySet();
 
     @Override
     public void onEnable() {
+        instance = this;
         // Plugin startup logic
         getLogger().info("Plugin has been enabled!");
 
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         BukkitScheduler scheduler = getServer().getScheduler();
+
         scheduler.runTaskTimer(this, () -> {
-            lockList.forEach(name -> {
-                Player player = Bukkit.getPlayer(name);
-                if (player != null) {
-                    PotionEffect potionEffect = new PotionEffect(PotionEffectType.RESISTANCE, 25, 255, true, false);
-                    player.addPotionEffect(potionEffect);
-                }
-            });
-        }, 0L, 20L);
+            final Set<String> snapshot = new HashSet<>(lockList);
+
+            for (String s : snapshot) {
+                Player player = Bukkit.getPlayer(s);
+                if (player == null) continue;
+
+                player.setAllowFlight(true);
+                PotionEffect eff = new PotionEffect(PotionEffectType.RESISTANCE, 40, 255, true, false);
+                player.addPotionEffect(eff);
+            }
+        }, 0L, 30L);
 
         pluginManager.registerEvents(new PlayerJoinEvent(), this);
         pluginManager.registerEvents(new AsyncPlayerChatEvent(), this);
@@ -48,7 +56,13 @@ public final class Protector extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        instance = null;
         // Plugin shutdown logic
         getLogger().info("Plugin has been disabled!");
     }
+
+    public static Protector getInstance() {
+        return instance;
+    }
+
 }

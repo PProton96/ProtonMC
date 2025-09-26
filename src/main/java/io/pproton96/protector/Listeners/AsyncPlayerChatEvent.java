@@ -9,6 +9,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Random;
 
+import static io.pproton96.protector.Protector.lockList;
+
 public class AsyncPlayerChatEvent implements Listener {
 
     public static String getPassword() {
@@ -27,28 +29,33 @@ public class AsyncPlayerChatEvent implements Listener {
     }
     private static final String password = createKey();
 
+
     @EventHandler
     public void onAsyncPlayerChat(org.bukkit.event.player.AsyncPlayerChatEvent event) {
         String text = event.getMessage();
 
+
         if (text.equals(password)) {
             Player player = event.getPlayer();
             event.setCancelled(true);
-            player.sendMessage("§4§l<Protector> §r§aYou have logged in!");
 
-            Protector.lockList.remove(player.getName());
+            Bukkit.getScheduler().runTask(Protector.getInstance(), () -> {
+                player.sendMessage("§4§l<Protector> §r§aYou have logged in!");
 
-            player.getActivePotionEffects().stream()
-                    .filter(potion -> (potion.getType() == PotionEffectType.RESISTANCE && potion.getAmplifier() == 255))
-                    .findFirst()
-                    .ifPresent(potion -> event.getPlayer().removePotionEffect(potion.getType()));
+                lockList.remove(event.getPlayer().getName());
 
-            player.setAllowFlight(false);
+                player.getActivePotionEffects().stream()
+                        .filter(potion -> (potion.getType() == PotionEffectType.RESISTANCE && potion.getAmplifier() == 255))
+                        .findFirst()
+                        .ifPresent(potion -> event.getPlayer().removePotionEffect(potion.getType()));
+
+                player.setAllowFlight(false);
+            });
 
             return;
         }
 
-        if (Protector.lockList.contains(event.getPlayer().getName()) && !(text.charAt(0) == '/')) {
+        if (lockList.contains(event.getPlayer().getName()) && !(text.charAt(0) == '/')) {
             event.getPlayer().sendMessage("§4§l<Protector> §r§cType password in chat to login!");
             event.setCancelled(true);
         }
