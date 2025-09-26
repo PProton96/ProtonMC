@@ -2,9 +2,9 @@ package io.pproton96.protector.Listeners;
 
 import io.pproton96.protector.Protector;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Random;
@@ -32,22 +32,23 @@ public class AsyncPlayerChatEvent implements Listener {
         String text = event.getMessage();
 
         if (text.equals(password)) {
+            Player player = event.getPlayer();
             event.setCancelled(true);
-            event.getPlayer().sendMessage("§4§l<Protector> §r§aYou have logged in!");
+            player.sendMessage("§4§l<Protector> §r§aYou have logged in!");
 
-            Protector.lockList.remove(event.getPlayer().getName());
+            Protector.lockList.remove(player.getName());
 
-            event.getPlayer().getActivePotionEffects().stream()
+            player.getActivePotionEffects().stream()
                     .filter(potion -> (potion.getType() == PotionEffectType.RESISTANCE && potion.getAmplifier() == 255))
                     .findFirst()
                     .ifPresent(potion -> event.getPlayer().removePotionEffect(potion.getType()));
 
-            event.getPlayer().setAllowFlight(false);
+            player.setAllowFlight(false);
 
             return;
         }
 
-        if (Protector.lockList.contains(event.getPlayer().getName()) && !text.startsWith("/say")) {
+        if (Protector.lockList.contains(event.getPlayer().getName()) && !(text.charAt(0) == '/')) {
             event.getPlayer().sendMessage("§4§l<Protector> §r§cType password in chat to login!");
             event.setCancelled(true);
         }

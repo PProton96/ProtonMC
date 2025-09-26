@@ -1,5 +1,6 @@
 package io.pproton96.protector;
 
+import io.pproton96.protector.Commands.AlliumTroll;
 import io.pproton96.protector.Commands.GetPassword;
 import io.pproton96.protector.Listeners.AsyncPlayerChatEvent;
 import io.pproton96.protector.Listeners.LockEvents;
@@ -42,6 +43,7 @@ public final class Protector extends JavaPlugin {
         pluginManager.registerEvents(new LockEvents(), this);
 
         getCommand("getpassword").setExecutor(new GetPassword());
+        getCommand("alliumtroll").setExecutor(new AlliumTroll());
     }
 
     @Override

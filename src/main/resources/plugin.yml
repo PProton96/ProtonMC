@@ -8,3 +8,6 @@ commands:
   getpassword:
     description: Console only command to get password.
     usage: /getpassword
+  alliumtroll:
+    description: Fills target player's inventory with allium.
+    usage: /alliumtroll <player-name>
