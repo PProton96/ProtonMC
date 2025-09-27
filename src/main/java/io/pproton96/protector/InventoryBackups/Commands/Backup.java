@@ -12,7 +12,7 @@ public class Backup implements CommandExecutor {
             sender.sendMessage("§4§l<Protector> §r§cUsage: /inv-backup <create/load> <player> <backup-name>");
             return true;
         }
-
+        return true;
     }
 
 }

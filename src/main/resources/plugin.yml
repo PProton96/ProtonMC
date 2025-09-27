@@ -12,3 +12,7 @@ commands:
     description: Trolling commands.
     usage: /troll <player> <type> ...
     permission: protector.troll
+  health:
+    description: Health controller commands.
+    usage: /health <player> <type> ...
+    permission: protector.health

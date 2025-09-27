@@ -14,6 +14,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
+import static io.pproton96.protector.Listeners.EntityDamageEvent.fallDamageMultiplierMap;
+
 
 public class Troll implements CommandExecutor {
 
@@ -31,15 +33,15 @@ public class Troll implements CommandExecutor {
             return true;
         }
 
-        final List<String> commands = Arrays.asList("allium", "dmgMultiplier", "levitate");
+        final List<String> commands = Arrays.asList("allium", "dmgMultiplier", "levitate", "fallDamageMultiplier");
         final int argsCount = args.length;
 
         if (argsCount < 2 || !commands.contains(args[0])) {
             sender.sendMessage("§4§l<Protector> §r§cGeneral Usage: /troll <type> <player>" +
                     "\n §lTypes:" +
-                    "\n§r§d- allium: /troll allium <player> [delay]; If delay is not specified, player's inventory will be just replaced with allium." +
-                    "\n§r§c- dmgMultiplier: /troll dmgMultiplier <player> <multiplier>; Multiplies damage player takes by <multiplier>." +
-                    "\n§r§b- levitate: /troll levitate <player>; Shoots player into the cosmos.");
+                    "\n\n§r§d- allium: /troll allium <player> [delay]; If delay is not specified, player's inventory will be just replaced with allium." +
+                    "\n\n§r§c- dmgMultiplier: /troll dmgMultiplier <player> <multiplier>; Multiplies damage player takes by <multiplier>." +
+                    "\n\n§r§b- levitate: /troll levitate <player>; Shoots player into the cosmos.");
             return true;
         }
         // Switch case for different types of trolling
@@ -50,6 +52,8 @@ public class Troll implements CommandExecutor {
                 dmgMultiplier(sender, args);
             case "levitate":
                 levitate(sender, args);
+            case "fallDamageMultiplier":
+                fallDamageMultiplier(sender, args);
         }
 
 
@@ -139,5 +143,27 @@ public class Troll implements CommandExecutor {
         }
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, ((int) Math.ceil(duration*20)), 9));
+    }
+
+    // Multiplies target's fall damage by x
+    public void fallDamageMultiplier(CommandSender sender, String args[]) {
+        Player player = checkPlayer(sender, args[1], "fallDamageMultiplier");
+        if (player == null) return;
+
+        if (args.length < 3) {
+            sender.sendMessage("§4§l<Protector> §r§cUsage: /troll fallDamageMultiplier <player> <multiplier>");
+            return;
+        }
+        float multiplier;
+        try {
+            multiplier = Float.parseFloat(args[2]);
+        } catch (Exception e) {
+            sender.sendMessage("§4§l<Protector> §r§cInvalid multiplier! Multiplier must be a decimal or whole number!");
+            Bukkit.getLogger().warning("[Protector]: Encountered an error while parsing multiplier: \n" + e.getMessage());
+            return;
+        }
+
+        fallDamageMultiplierMap.put(player, multiplier);
+
     }
 }

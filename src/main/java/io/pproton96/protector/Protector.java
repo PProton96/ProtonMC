@@ -1,11 +1,9 @@
 package io.pproton96.protector;
 
+import io.pproton96.protector.Commands.HealthController;
 import io.pproton96.protector.Commands.Troll;
 import io.pproton96.protector.Commands.GetPassword;
-import io.pproton96.protector.Listeners.AsyncPlayerChatEvent;
-import io.pproton96.protector.Listeners.EntityDamageByEntityEvent;
-import io.pproton96.protector.Listeners.LockEvents;
-import io.pproton96.protector.Listeners.PlayerJoinEvent;
+import io.pproton96.protector.Listeners.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -53,9 +51,11 @@ public final class Protector extends JavaPlugin {
         pluginManager.registerEvents(new AsyncPlayerChatEvent(), this); // Async player chat event.
         pluginManager.registerEvents(new LockEvents(), this); // Locks events for non-authorized players.
         pluginManager.registerEvents(new EntityDamageByEntityEvent(), this); // Entity damage by entity event.
+        pluginManager.registerEvents(new EntityDamageEvent(), this); // Entity damage event.
 
         getCommand("getpassword").setExecutor(new GetPassword()); // Command to obtain password (Works only for console).
         getCommand("troll").setExecutor(new Troll()); // Trolling commands.
+        getCommand("health").setExecutor(new HealthController()); // Health controller commands.
     }
 
     @Override
