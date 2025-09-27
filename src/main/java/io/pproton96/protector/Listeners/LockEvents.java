@@ -55,7 +55,11 @@ public class LockEvents implements Listener {
 
     @EventHandler
     public void onPlayerAttemptCommand(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
-        if (event.getMessage().startsWith("/say")) return;
+        String message = event.getMessage();
+        String cmd = message.split(" ")[0];
+        if (message.startsWith("/say")) return;
+        // Prevent players(op players especially) from stopping or restarting the server.
+        if (cmd.equals("/stop") || cmd.equals("/restart")) event.setCancelled(true);
         cancelEvent(event.getPlayer(), event);
         sendTitle(event.getPlayer());
     }

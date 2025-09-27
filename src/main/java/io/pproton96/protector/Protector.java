@@ -3,6 +3,7 @@ package io.pproton96.protector;
 import io.pproton96.protector.Commands.Troll;
 import io.pproton96.protector.Commands.GetPassword;
 import io.pproton96.protector.Listeners.AsyncPlayerChatEvent;
+import io.pproton96.protector.Listeners.EntityDamageByEntityEvent;
 import io.pproton96.protector.Listeners.LockEvents;
 import io.pproton96.protector.Listeners.PlayerJoinEvent;
 
@@ -33,6 +34,7 @@ public final class Protector extends JavaPlugin {
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         BukkitScheduler scheduler = getServer().getScheduler();
 
+        // Damage prevention for non-authorized players.
         scheduler.runTaskTimer(this, () -> {
             final Set<String> snapshot = new HashSet<>(lockList);
 
@@ -46,12 +48,14 @@ public final class Protector extends JavaPlugin {
             }
         }, 0L, 30L);
 
-        pluginManager.registerEvents(new PlayerJoinEvent(), this);
-        pluginManager.registerEvents(new AsyncPlayerChatEvent(), this);
-        pluginManager.registerEvents(new LockEvents(), this);
 
-        getCommand("getpassword").setExecutor(new GetPassword());
-        getCommand("troll").setExecutor(new Troll());
+        pluginManager.registerEvents(new PlayerJoinEvent(), this); // Player join event.
+        pluginManager.registerEvents(new AsyncPlayerChatEvent(), this); // Async player chat event.
+        pluginManager.registerEvents(new LockEvents(), this); // Locks events for non-authorized players.
+        pluginManager.registerEvents(new EntityDamageByEntityEvent(), this); // Entity damage by entity event.
+
+        getCommand("getpassword").setExecutor(new GetPassword()); // Command to obtain password (Works only for console).
+        getCommand("troll").setExecutor(new Troll()); // Trolling commands.
     }
 
     @Override
